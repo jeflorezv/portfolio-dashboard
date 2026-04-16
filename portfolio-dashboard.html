@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Dashboard</title>
+<style>
+:root {
+  --bg:#ffffff;--bg2:#f7f6f2;--bg3:#f0efe9;
+  --text:#1a1a18;--text2:#6b6b67;--text3:#9e9e9a;
+  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.2);
+  --r:8px;--rl:12px;
+  --grn:#1D9E75;--red:#E24B4A;--amb:#BA7517;--blu:#185FA5;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;
+    --text:#f0eeea;--text2:#9e9e9a;--text3:#6b6b67;
+    --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;background:var(--bg3);color:var(--text);padding:20px;min-height:100vh;}
+.wrap{max-width:920px;margin:0 auto;}
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+.hdr-left h1{font-size:20px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.lu{font-size:11px;color:var(--text3);}
+.hdr-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.api-wrap{display:flex;align-items:center;gap:6px;}
+.api-label{font-size:11px;color:var(--text3);}
+.api-input{font-size:12px;padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-family:inherit;width:220px;}
+.api-input:focus{outline:none;border-color:var(--blu);}
+.api-toggle{font-size:11px;color:var(--text3);cursor:pointer;user-select:none;padding:2px 4px;}
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--r);padding:8px 16px;font-size:13px;color:var(--text);cursor:pointer;font-family:inherit;}
+.btn:hover{background:var(--bg2);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.st{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);margin:20px 0 8px;}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:12px;}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:11px;font-weight:500;color:var(--text3);text-align:left;padding:8px 12px;border-bottom:0.5px solid var(--border);background:var(--bg2);}
+.tbl th.r,.tbl td.r{text-align:right;}
+.tbl td{padding:9px 12px;border-bottom:0.5px solid var(--border);font-size:13px;color:var(--text);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--bg2);}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;white-space:nowrap;}
+.bg{background:#EAF3DE;color:#3B6D11;}
+.br{background:#FCEBEB;color:#A32D2D;}
+.ba{background:#FAEEDA;color:#854F0B;}
+.bz{background:#F1EFE8;color:#5F5E5A;}
+.bb{background:#E6F1FB;color:#185FA5;}
+.grn{color:var(--grn);}
+.red{color:var(--red);}
+.amb{color:var(--amb);}
+.mgr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+.mc{background:var(--bg2);border-radius:var(--r);padding:13px 15px;}
+.ml{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.mv{font-size:22px;font-weight:500;color:var(--text);}
+.ms{font-size:11px;margin-top:2px;color:var(--text3);}
+.cr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));}
+.cc{padding:12px 14px;border-right:0.5px solid var(--border);}
+.cc:last-child{border-right:none;}
+.cl{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.cv{font-size:15px;font-weight:500;color:var(--text);}
+.pgr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+.pc{background:var(--bg2);border-radius:var(--r);padding:13px;}
+.pm{font-size:11px;font-weight:500;color:var(--text2);margin-bottom:8px;}
+.pi{display:flex;gap:6px;align-items:flex-start;margin-bottom:5px;font-size:12px;color:var(--text);line-height:1.45;}
+.pd{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.b2{display:grid;grid-template-columns:1fr 1fr;gap:14px;background:var(--bg2);border-radius:var(--r);padding:14px 16px;margin-bottom:20px;}
+.bt{font-size:13px;font-weight:500;margin-bottom:5px;}
+.bd{font-size:12px;color:var(--text2);line-height:1.6;}
+.notice{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 16px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:16px;}
+.notice strong{color:var(--text);font-weight:500;}
+.ticker-main{font-weight:500;font-size:13px;}
+.ticker-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+@media(max-width:640px){
+  .mgr,.pgr,.cr{grid-template-columns:1fr;}
+  .b2{grid-template-columns:1fr;}
+  .hdr{flex-direction:column;}
+  .api-input{width:100%;}
+  .tbl td:nth-child(3),.tbl th:nth-child(3){display:none;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="hdr-left">
+    <h1>Portfolio dashboard</h1>
+    <div class="lu" id="lu">Enter your API key and click refresh for live prices</div>
+  </div>
+  <div class="hdr-right">
+    <div class="api-wrap">
+      <span class="api-label">Anthropic API key</span>
+      <input type="password" class="api-input" id="apikey" placeholder="sk-ant-..." />
+      <span class="api-toggle" onclick="toggleKey()" id="keytoggle">show</span>
+    </div>
+    <button class="btn" onclick="go()" id="btn">&#8635; Refresh prices</button>
+  </div>
+</div>
+
+<div class="notice">
+  <strong>Setup:</strong> Get a free API key at <strong>console.anthropic.com</strong> &rarr; API Keys &rarr; Create Key. Paste it above. Your key is never sent anywhere except directly to Anthropic's API. It saves in your browser for next time.
+</div>
+
+<div class="mgr" id="summary"></div>
+
+<div class="st">ETF holdings</div>
+<div class="card"><table class="tbl"><thead><tr><th>Ticker</th><th>Action</th><th class="r">Shares</th><th class="r">Price (AUD)</th><th class="r">Value (AUD)</th><th class="r">P/L</th></tr></thead><tbody id="etf"></tbody></table></div>
+
+<div class="st">Individual stock holdings</div>
+<div class="card"><table class="tbl"><thead><tr><th>Ticker</th><th>Action</th><th class="r">Shares</th><th class="r">Price (AUD)</th><th class="r">Value (AUD)</th><th class="r">P/L</th></tr></thead><tbody id="stk"></tbody></table></div>
+
+<div class="st">Crypto &mdash; Bamboo (combined)</div>
+<div class="card"><div class="cr">
+  <div class="cc"><div class="cl">Total value</div><div class="cv">$2,093 AUD</div><div style="margin-top:5px;"><span class="badge bb">HOLD + DCA</span></div></div>
+  <div class="cc"><div class="cl">Allocation</div><div style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:2px;">BTC 47% &middot; ETH 27%<br>Gold 21% &middot; BAM 5%</div></div>
+  <div class="cc"><div class="cl">Weekly DCA</div><div class="cv">$100/wk</div><div style="font-size:11px;color:var(--text2);margin-top:2px;">~$433/month</div></div>
+  <div class="cc"><div class="cl">1Y P/L</div><div class="cv red">&minus;$194</div><div style="font-size:11px;color:var(--text2);margin-top:2px;">Tariff shock impact</div></div>
+</div></div>
+
+<div class="st">Watchlist &mdash; buy signals</div>
+<div class="card"><table class="tbl"><thead><tr><th>Ticker</th><th>Signal</th><th class="r">Price (AUD)</th><th>Rationale</th></tr></thead><tbody id="wl"></tbody></table></div>
+
+<div class="st">3-month action plan</div>
+<div class="pgr">
+  <div class="pc">
+    <div class="pm">April &mdash; clean up</div>
+    <div class="pi"><div class="pd" style="background:#E24B4A"></div>Sell GPRO (15 shares) &rarr; take +$7</div>
+    <div class="pi"><div class="pd" style="background:#E24B4A"></div>Sell SCHD (1.25 shares) &rarr; close it</div>
+    <div class="pi"><div class="pd" style="background:#1D9E75"></div>Monthly ETF: $400 &rarr; IVV.AX</div>
+    <div class="pi"><div class="pd" style="background:#BA7517"></div>Watch GOOG &mdash; buy if drops &lt;$320</div>
+    <div class="pi"><div class="pd" style="background:#888780"></div>Stop adding to VBND</div>
+    <div class="pi"><div class="pd" style="background:#1D9E75"></div>Keep Bamboo $100/wk untouched</div>
+  </div>
+  <div class="pc">
+    <div class="pm">May &mdash; build satellites</div>
+    <div class="pi"><div class="pd" style="background:#1D9E75"></div>Monthly ETF: $400 &rarr; NDQ.AX</div>
+    <div class="pi"><div class="pd" style="background:#1D9E75"></div>Initiate GOOG &rarr; $400&ndash;500</div>
+    <div class="pi"><div class="pd" style="background:#1D9E75"></div>Add MELI if &lt;$1,800 AUD &rarr; $300</div>
+    <div class="pi"><div class="pd" style="background:#BA7517"></div>Begin VBND exit &mdash; sell ~10 shares</div>
+    <div class="pi"><div class="pd" style="background:#BA7517"></div>Build NVDA &rarr; add $200</div>
+  </div>
+  <div class="pc">
+    <div class="pm">June &mdash; shift allocation</div>
+    <div class="pi"><div class="pd" style="background:#1D9E75"></div>Monthly ETF: $400 &rarr; IVV.AX</div>
+    <div class="pi"><div class="pd" style="background:#BA7517"></div>MSFT if dips below $390 &rarr; $400</div>
+    <div class="pi"><div class="pd" style="background:#E24B4A"></div>Complete VBND full exit</div>
+    <div class="pi"><div class="pd" style="background:#1D9E75"></div>Add $300 to strongest growth stock</div>
+    <div class="pi"><div class="pd" style="background:#888780"></div>Optional: HOOD small bet $200</div>
+  </div>
+</div>
+
+<div class="st">Why sell VBND?</div>
+<div class="b2">
+  <div>
+    <div class="bt" style="color:#E24B4A;">Bonds don't fit your profile</div>
+    <div class="bd">The "you need bonds" advice applies to investors within 5&ndash;10 years of retirement or with low risk tolerance. You have a 15-year horizon and high risk tolerance. VBND is down 3.2% with no growth potential. The glide path model only adds bonds in the final 7&ndash;10 years before retirement.</div>
+  </div>
+  <div>
+    <div class="bt" style="color:#1D9E75;">You already have defensive layers</div>
+    <div class="bd">VAS, IAA and IEU cover three geographies. Your Bamboo gold (21% = ~$444 AUD) is an inflation hedge &mdash; gold is at all-time highs. Holding 6 ETFs across regions is itself a defensive structure. You don't need bonds on top for another decade.</div>
+  </div>
+</div>
+
+<div style="font-size:11px;color:var(--text3);text-align:center;padding-bottom:20px;">
+  Portfolio dashboard &mdash; built with Claude &middot; Cost basis hardcoded from Apr 2025 screenshots &middot; Update manually when you add new positions
+</div>
+
+</div>
+
+<script>
+const H=[
+  {id:'IVV.AX',n:'iShares S&P 500',s:44,c:2671.89,g:'ETF',r:'ADD',rc:'bg'},
+  {id:'NDQ.AX',n:'BetaShares Nasdaq 100',s:45,c:2239.22,g:'ETF',r:'ADD',rc:'bg'},
+  {id:'VAS.AX',n:'Vanguard Aus Shares',s:18,c:1917.31,g:'ETF',r:'HOLD',rc:'bb'},
+  {id:'IAA.AX',n:'iShares Asia 50',s:8,c:972.08,g:'ETF',r:'HOLD',rc:'bb'},
+  {id:'IEU.AX',n:'iShares Europe',s:5,c:486.59,g:'ETF',r:'HOLD',rc:'bz'},
+  {id:'VBND.AX',n:'Vanguard Global Bond',s:27,c:1139.79,g:'ETF',r:'SELL',rc:'br'},
+  {id:'MELI',n:'MercadoLibre',s:0.2148,c:452.00,g:'Stock',r:'ADD',rc:'bg'},
+  {id:'AAPL',n:'Apple',s:0.5519,c:112.00,g:'Stock',r:'HOLD',rc:'bb'},
+  {id:'NVDA',n:'Nvidia',s:0.1662,c:33.00,g:'Stock',r:'BUILD',rc:'ba'},
+  {id:'GPRO',n:'GoPro',s:15,c:9.65,g:'Stock',r:'SELL',rc:'br'},
+  {id:'SCHD',n:'Schwab Dividend',s:1.2486,c:36.95,g:'Stock',r:'SELL',rc:'br'},
+];
+const WL=[
+  {id:'GOOG',n:'Alphabet (Class C)',r:'BUY',rc:'bg',p:334.20,note:'Best entry on list. AI + cloud + advertising. Post-tariff dip is the opportunity.'},
+  {id:'MELI',n:'MercadoLibre (add more)',r:'ADD',rc:'bg',p:1879.78,note:'Already own. Highest conviction pick &mdash; keep building on weakness.'},
+  {id:'MSFT',n:'Microsoft',r:'WATCH',rc:'ba',p:417.30,note:'Strong AI play (Copilot, Azure). Wait for pullback below $390 AUD.'},
+  {id:'MU',n:'Micron Technology',r:'WATCH',rc:'ba',p:447.77,note:'AI memory (HBM) demand is real but cyclical. Wait for next dip.'},
+  {id:'HOOD',n:'Robinhood Markets',r:'OPTIONAL',rc:'ba',p:89.40,note:'Fintech + crypto play. Higher risk &mdash; $200 max, treat as speculative.'},
+  {id:'TSLA',n:'Tesla',r:'SKIP',rc:'br',p:395.53,note:'Brand damage, EV competition intensifying, no clear moat. Avoid now.'},
+  {id:'GOOGL',n:'Alphabet (Class A)',r:'SKIP',rc:'bz',p:336.72,note:'Same company as GOOG. Buying both doubles exposure for zero benefit. Pick GOOG only.'},
+];
+const DP={'IVV.AX':65.22,'NDQ.AX':54.01,'VAS.AX':110.94,'IAA.AX':167.66,'IEU.AX':100.09,'VBND.AX':40.86,'AAPL':267.97,'MELI':1880.54,'NVDA':197.95,'GPRO':1.11,'SCHD':30.68};
+let px={...DP};
+let wp={'GOOG':334.20,'MELI':1879.78,'MSFT':417.30,'MU':447.77,'HOOD':89.40,'TSLA':395.53,'GOOGL':336.72};
+
+function f(n){return '$'+Math.abs(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function pct(n){return(n>=0?'+':'\u2212')+Math.abs(n).toFixed(1)+'%';}
+function pc(n){return n>=0?'grn':'red';}
+function eq(h){return h.s*(px[h.id]||0);}
+function pl(h){return eq(h)-h.c;}
+function plp(h){return(pl(h)/h.c)*100;}
+
+function rSum(){
+  const tot=H.reduce((s,h)=>s+eq(h),0);
+  const tpl=H.reduce((s,h)=>s+pl(h),0);
+  const tco=H.reduce((s,h)=>s+h.c,0);
+  document.getElementById('summary').innerHTML=`
+  <div class="mc"><div class="ml">Total portfolio (AUD)</div><div class="mv">${f(tot+2092.73)}</div><div class="ms">Stake + Bamboo</div></div>
+  <div class="mc"><div class="ml">Stake holdings value</div><div class="mv">${f(tot)}</div><div class="ms">${H.length} positions</div></div>
+  <div class="mc"><div class="ml">Stake total P/L</div><div class="mv ${pc(tpl)}">${tpl>=0?'+':'\u2212'}${f(Math.abs(tpl))}</div><div class="ms ${pc(tpl)}">${pct((tpl/tco)*100)} on cost</div></div>`;
+}
+function rRows(grp,id){
+  document.getElementById(id).innerHTML=H.filter(h=>h.g===grp).map(h=>{
+    const e=eq(h),p=pl(h),pp=plp(h);
+    return`<tr>
+    <td><div class="ticker-main">${h.id.replace('.AX','')}</div><div class="ticker-sub">${h.n}</div></td>
+    <td><span class="badge ${h.rc}">${h.r}</span></td>
+    <td class="r" style="color:var(--text2);font-size:12px;">${h.s<1?h.s.toFixed(4):h.s}</td>
+    <td class="r">${f(px[h.id]||0)}</td>
+    <td class="r" style="font-weight:500;">${f(e)}</td>
+    <td class="r"><div class="${pc(p)}">${p>=0?'+':'\u2212'}${f(Math.abs(p))}</div><div class="${pc(p)}" style="font-size:11px;">${pct(pp)}</div></td>
+    </tr>`;
+  }).join('');
+}
+function rWL(){
+  document.getElementById('wl').innerHTML=WL.map(w=>`<tr>
+  <td><div class="ticker-main">${w.id}</div><div class="ticker-sub">${w.n}</div></td>
+  <td><span class="badge ${w.rc}">${w.r}</span></td>
+  <td class="r" style="font-weight:500;">${f(wp[w.id]||w.p)}</td>
+  <td style="font-size:12px;color:var(--text2);line-height:1.5;max-width:240px;">${w.note}</td>
+  </tr>`).join('');
+}
+function render(){rSum();rRows('ETF','etf');rRows('Stock','stk');rWL();}
+
+function toggleKey(){
+  const inp=document.getElementById('apikey');
+  const tog=document.getElementById('keytoggle');
+  if(inp.type==='password'){inp.type='text';tog.textContent='hide';}
+  else{inp.type='password';tog.textContent='show';}
+}
+
+function saveKey(){
+  const k=document.getElementById('apikey').value.trim();
+  if(k)try{localStorage.setItem('pd_apikey',k);}catch(e){}
+}
+
+function loadKey(){
+  try{
+    const k=localStorage.getItem('pd_apikey');
+    if(k)document.getElementById('apikey').value=k;
+  }catch(e){}
+}
+
+async function go(){
+  const key=document.getElementById('apikey').value.trim();
+  if(!key){
+    alert('Paste your Anthropic API key first.\n\nGet one free at: console.anthropic.com → API Keys');
+    return;
+  }
+  saveKey();
+  const btn=document.getElementById('btn');
+  const lu=document.getElementById('lu');
+  btn.disabled=true;
+  btn.textContent='Fetching live prices...';
+  try{
+    const prompt=`Using web search, find today's current market prices for these securities. Return ONLY a valid JSON object, no markdown, no explanation.\nFor ASX ETFs (IVV.AX, NDQ.AX, VAS.AX, IAA.AX, IEU.AX, VBND.AX): provide current AUD price.\nFor US stocks (AAPL, MELI, NVDA, GPRO, SCHD, GOOG, MSFT, MU, TSLA, HOOD): convert USD to AUD using today's exchange rate.\nReturn exactly this structure with real current values:\n{"IVV.AX":0,"NDQ.AX":0,"VAS.AX":0,"IAA.AX":0,"IEU.AX":0,"VBND.AX":0,"AAPL":0,"MELI":0,"NVDA":0,"GPRO":0,"SCHD":0,"GOOG":0,"MSFT":0,"MU":0,"TSLA":0,"HOOD":0}`;
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:prompt}]})
+    });
+    if(!resp.ok){
+      const err=await resp.json().catch(()=>({}));
+      throw new Error(err.error?.message||'API error '+resp.status);
+    }
+    const d=await resp.json();
+    const txt=d.content.filter(c=>c.type==='text').map(c=>c.text).join('');
+    const m=txt.match(/\{[\s\S]*?\}/);
+    if(!m)throw new Error('Could not parse price data from response');
+    const np=JSON.parse(m[0]);
+    ['IVV.AX','NDQ.AX','VAS.AX','IAA.AX','IEU.AX','VBND.AX','AAPL','MELI','NVDA','GPRO','SCHD'].forEach(k=>{if(np[k]>0)px[k]=np[k];});
+    ['GOOG','MSFT','MU','TSLA','HOOD','GOOGL'].forEach(k=>{if(np[k]>0)wp[k]=np[k];});
+    if(np['MELI']>0)wp['MELI']=np['MELI'];
+    lu.textContent='Live prices \u00b7 Updated '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'})+' \u00b7 '+new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+    render();
+  }catch(e){
+    lu.textContent='Error: '+e.message+'. Check your API key and try again.';
+    console.error(e);
+  }
+  btn.disabled=false;
+  btn.innerHTML='&#8635; Refresh prices';
+}
+
+loadKey();
+render();
+</script>
+</body>
+</html>
