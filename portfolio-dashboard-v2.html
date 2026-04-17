@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Dashboard v2</title>
+<style>
+:root{--bg:#fff;--bg2:#f7f6f2;--bg3:#f0efe9;--bg4:#e8e7e1;--text:#1a1a18;--text2:#6b6b67;--text3:#9e9e9a;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.2);--r:8px;--rl:12px;--grn:#1D9E75;--red:#E24B4A;--amb:#BA7517;--blu:#185FA5;}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;--bg4:#383835;--text:#f0eeea;--text2:#9e9e9a;--text3:#6b6b67;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);}}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;background:var(--bg3);color:var(--text);min-height:100vh;}
+.app{max-width:1020px;margin:0 auto;padding:20px;}
+h1{font-size:20px;font-weight:500;}
+.lu{font-size:11px;color:var(--text3);margin-top:3px;}
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;}
+.hdr-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.kw{display:flex;align-items:center;gap:6px;}
+.kl{font-size:11px;color:var(--text3);}
+input[type=password],input[type=text],input[type=number]{font-size:13px;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--r);background:var(--bg);color:var(--text);font-family:inherit;}
+input:focus{outline:none;border-color:var(--blu);}
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--r);padding:7px 14px;font-size:13px;color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap;}
+.btn:hover{background:var(--bg2);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.btnp{background:var(--blu);color:#fff;border-color:var(--blu);}
+.btnp:hover{background:#0C447C;}
+.tabs{display:flex;border-bottom:0.5px solid var(--border);margin-bottom:18px;overflow-x:auto;}
+.tab{padding:9px 18px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-0.5px;white-space:nowrap;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--text);border-bottom-color:var(--blu);font-weight:500;}
+.tc{display:none;}
+.tc.active{display:block;}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:12px;}
+.cp{padding:16px 18px;}
+.mcg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px;}
+.mc{background:var(--bg2);border-radius:var(--r);padding:13px 15px;}
+.ml{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.mv{font-size:22px;font-weight:500;}
+.ms{font-size:11px;margin-top:2px;color:var(--text3);}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:11px;font-weight:500;color:var(--text3);text-align:left;padding:8px 12px;border-bottom:0.5px solid var(--border);background:var(--bg2);}
+.tbl th.r,.tbl td.r{text-align:right;}
+.tbl td{padding:9px 12px;border-bottom:0.5px solid var(--border);font-size:13px;vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tbody tr:hover td{background:var(--bg2);cursor:pointer;}
+.tsub{font-size:11px;color:var(--text3);margin-top:1px;}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;white-space:nowrap;}
+.bg{background:#EAF3DE;color:#3B6D11;}.br{background:#FCEBEB;color:#A32D2D;}.ba{background:#FAEEDA;color:#854F0B;}.bz{background:#F1EFE8;color:#5F5E5A;}.bb{background:#E6F1FB;color:#185FA5;}
+.grn{color:var(--grn);}.red{color:var(--red);}.amb{color:var(--amb);}
+.st{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);margin:18px 0 8px;}
+.hint{font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px;}
+.notice{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:11px 14px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px;}
+.ng{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.nc{background:var(--bg2);border-radius:var(--r);padding:13px 14px;}
+.nch{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text3);margin-bottom:8px;}
+.ni{border-bottom:0.5px solid var(--border);padding:8px 0;}
+.ni:last-child{border-bottom:none;padding-bottom:0;}
+.ntitle{font-size:12px;color:var(--text);line-height:1.4;margin-bottom:3px;}
+.nmeta{font-size:11px;color:var(--text3);}
+.ns{display:inline-block;font-size:10px;padding:1px 5px;border-radius:3px;margin-left:5px;}
+.nsp{background:#EAF3DE;color:#3B6D11;}.nsn{background:#FCEBEB;color:#A32D2D;}.nsz{background:#F1EFE8;color:#5F5E5A;}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--bg);border-radius:var(--rl);width:92%;max-width:700px;max-height:88vh;overflow-y:auto;}
+.mhdr{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:0.5px solid var(--border);}
+.mtitle{font-size:16px;font-weight:500;}
+.mclose{background:none;border:none;font-size:22px;color:var(--text2);cursor:pointer;padding:2px 8px;line-height:1;}
+.mbody{padding:20px;}
+.ar{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border);}
+.ar:last-child{border-bottom:none;}
+.al{font-size:13px;width:170px;flex-shrink:0;}
+.ab{flex:1;}
+.abr{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.bw{flex:1;background:var(--bg3);border-radius:3px;height:7px;overflow:hidden;}
+.bf{height:7px;border-radius:3px;}
+.blab{font-size:11px;width:42px;text-align:right;}
+.pg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.pc{background:var(--bg2);border-radius:var(--r);padding:14px;}
+.pm{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;padding-bottom:8px;border-bottom:0.5px solid var(--border);}
+.pamt{font-size:10px;color:var(--text3);margin-bottom:10px;}
+.pi{display:flex;gap:7px;margin-bottom:7px;font-size:12px;line-height:1.45;}
+.pd{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.pamount{font-size:10px;font-weight:500;color:var(--text3);margin-top:1px;}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--blu);border-radius:50%;animation:sp 0.7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.ur{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);}
+.ur:last-child{border-bottom:none;}
+.ul{font-size:13px;flex:1;}
+.cg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));}
+.cc{padding:12px 14px;border-right:0.5px solid var(--border);}
+.cc:last-child{border-right:none;}
+.cl{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.cv{font-size:15px;font-weight:500;}
+@media(max-width:640px){
+  .mcg{grid-template-columns:1fr 1fr;}
+  .ng{grid-template-columns:1fr;}
+  .pg{grid-template-columns:1fr;}
+  .cg{grid-template-columns:1fr 1fr;}
+  .tbl td:nth-child(3),.tbl th:nth-child(3){display:none;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="hdr">
+  <div><h1>Portfolio dashboard <span style="font-size:12px;font-weight:400;color:var(--text3)">v2</span></h1><div class="lu" id="lu">Add API key and click refresh for live data</div></div>
+  <div class="hdr-r">
+    <div class="kw">
+      <span class="kl">API key</span>
+      <input type="password" id="apikey" placeholder="sk-ant-..." style="width:195px;" oninput="saveKey()"/>
+      <span style="font-size:11px;color:var(--text3);cursor:pointer;" onclick="toggleKey(this)">show</span>
+    </div>
+    <button class="btn" onclick="showUpdate()">↑ Weekly update</button>
+    <button class="btn" onclick="go()" id="rbtn">↻ Refresh prices</button>
+  </div>
+</div>
+
+<div class="mcg">
+  <div class="mc"><div class="ml">Total portfolio</div><div class="mv" id="s-tot">$12,975</div><div class="ms">Stake + Bamboo</div></div>
+  <div class="mc"><div class="ml">Stake value</div><div class="mv" id="s-stk">$10,882</div><div class="ms" id="s-pl">11 positions</div></div>
+  <div class="mc"><div class="ml">Crypto (Bamboo)</div><div class="mv" id="s-cry">$2,093</div><div class="ms">BTC · ETH · Gold · BAM</div></div>
+  <div class="mc"><div class="ml">Monthly investing</div><div class="mv">$933</div><div class="ms">ETFs $500 · Crypto $433</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="setTab('overview',this)">Overview</div>
+  <div class="tab" onclick="setTab('news',this)">News & signals</div>
+  <div class="tab" onclick="setTab('diversification',this)">Diversification</div>
+  <div class="tab" onclick="setTab('strategy',this)">3-month plan</div>
+</div>
+
+<!-- OVERVIEW -->
+<div id="t-overview" class="tc active">
+  <div class="st">ETF holdings <span class="hint">(click a row to see 12-month chart)</span></div>
+  <div class="card"><table class="tbl"><thead><tr><th>Ticker</th><th>Action</th><th class="r">Shares</th><th class="r">Price (AUD)</th><th class="r">Value</th><th class="r">P/L</th></tr></thead><tbody id="etf-b"></tbody></table></div>
+  <div class="st">Stock holdings <span class="hint">(click a row to see 12-month chart)</span></div>
+  <div class="card"><table class="tbl"><thead><tr><th>Ticker</th><th>Action</th><th class="r">Shares</th><th class="r">Price (AUD)</th><th class="r">Value</th><th class="r">P/L</th></tr></thead><tbody id="stk-b"></tbody></table></div>
+  <div class="st">Crypto — Bamboo (combined)</div>
+  <div class="card"><div class="cg">
+    <div class="cc"><div class="cl">Total value</div><div class="cv" id="cry-tot">$2,093 AUD</div><div style="margin-top:5px"><span class="badge bb">HOLD + DCA</span></div></div>
+    <div class="cc"><div class="cl">Allocation</div><div style="font-size:12px;color:var(--text2);line-height:1.8;margin-top:2px">BTC 47% · ETH 27%<br>Gold 21% · BAM 5%</div></div>
+    <div class="cc"><div class="cl">Weekly DCA</div><div class="cv">$100/wk</div><div style="font-size:11px;color:var(--text2);margin-top:2px">~$433/month — keep going</div></div>
+    <div class="cc"><div class="cl">1Y P/L</div><div class="cv red">−$194</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Tariff shock — don't panic</div></div>
+  </div></div>
+  <div class="st">Watchlist — buy signals <span class="hint">(click for chart)</span></div>
+  <div class="card"><table class="tbl"><thead><tr><th>Ticker</th><th>Signal</th><th class="r">Price (AUD)</th><th class="r">Entry target</th><th>Rationale</th></tr></thead><tbody id="wl-b"></tbody></table></div>
+</div>
+
+<!-- NEWS -->
+<div id="t-news" class="tc">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div>
+      <div style="font-size:15px;font-weight:500">News & signals</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:3px">Latest headlines for all holdings + watchlist, with AI sentiment scoring</div>
+    </div>
+    <button class="btn btnp" onclick="loadNews()" id="news-btn">Load news</button>
+  </div>
+  <div id="news-status" style="display:none" class="notice"><span class="spin"></span> Searching the web for news across all your tickers — takes ~25 seconds...</div>
+  <div id="news-out"><div style="text-align:center;padding:50px;color:var(--text3);font-size:13px">Click "Load news" to fetch the latest headlines for every holding and watchlist item, with AI-scored sentiment.</div></div>
+</div>
+
+<!-- DIVERSIFICATION -->
+<div id="t-diversification" class="tc">
+  <div class="st" style="margin-top:0">Actual vs target allocation (high-growth)</div>
+  <div class="card cp" id="alloc-tbl"></div>
+  <div class="st">Allocation chart</div>
+  <div class="card cp"><div style="position:relative;height:250px"><canvas id="dc" role="img" aria-label="Actual vs target allocation chart">Allocation comparison.</canvas></div></div>
+  <div class="st">Gap analysis & actions</div>
+  <div id="div-recs"></div>
+  <div class="st">Sector exposure vs high-growth target</div>
+  <div class="card"><table class="tbl">
+    <thead><tr><th>Sector</th><th class="r">Current</th><th class="r">Target</th><th>Status</th></tr></thead>
+    <tbody id="sector-b"></tbody>
+  </table></div>
+</div>
+
+<!-- STRATEGY -->
+<div id="t-strategy" class="tc">
+  <div style="margin-bottom:14px">
+    <div style="font-size:15px;font-weight:500;margin-bottom:4px">Reviewed 3-month plan — April to June 2026</div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6">Updated for the post-tariff-shock environment. Focus: close misaligned positions, build growth stocks from 5.5% → 15%, protect core ETF base. Monthly capacity: ~$500 ETFs + $150 stocks + $433 crypto DCA.</div>
+  </div>
+  <div class="pg" id="plan-out"></div>
+  <div class="st" style="margin-top:20px">Entry price targets — when to pull the trigger</div>
+  <div class="card"><table class="tbl">
+    <thead><tr><th>Stock</th><th class="r">Price now (AUD)</th><th class="r">Buy target</th><th class="r">Max position</th><th>Trigger event</th></tr></thead>
+    <tbody id="entry-b"></tbody>
+  </table></div>
+  <div class="st">How to keep Stake & Bamboo values current</div>
+  <div class="card cp">
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px">Neither Stake nor Bamboo offer a personal API — but here's the practical workflow</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+        <div style="font-size:12px;font-weight:500;margin-bottom:6px">Weekly (2 min, Sundays)</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7">1. Open Stake → check total value + any new shares<br>2. Open Bamboo → check portfolio value<br>3. Click "Weekly update" button → enter values → Save</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+        <div style="font-size:12px;font-weight:500;margin-bottom:6px">Monthly (Stake CSV export)</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7">Stake → Account → Statements → Download CSV. Use this to reconcile exact share counts after any purchases. Paste updated share counts into the Weekly Update tool.</div>
+      </div>
+      <div style="background:var(--bg2);border-radius:var(--r);padding:13px">
+        <div style="font-size:12px;font-weight:500;margin-bottom:6px">Sharesight (recommended)</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.7">Free Australian portfolio tracker. Connects to Stake via manual CSV import, auto-tracks performance, P/L, and generates tax reports. Best long-term solution at sharesight.com</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- CHART MODAL -->
+<div class="modal-ov" id="chart-m">
+  <div class="modal">
+    <div class="mhdr"><div class="mtitle" id="cm-title">Price history</div><button class="mclose" onclick="closeModal('chart-m')">×</button></div>
+    <div class="mbody">
+      <div id="cm-status" style="text-align:center;padding:20px;color:var(--text3)"></div>
+      <div style="position:relative;height:280px;display:none" id="cm-wrap"><canvas id="pc" role="img" aria-label="12-month price history">Price data.</canvas></div>
+      <div id="cm-info" style="margin-top:14px;font-size:12px;color:var(--text2)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEKLY UPDATE MODAL -->
+<div class="modal-ov" id="upd-m">
+  <div class="modal">
+    <div class="mhdr"><div class="mtitle">Weekly portfolio update</div><button class="mclose" onclick="closeModal('upd-m')">×</button></div>
+    <div class="mbody">
+      <div class="notice">Update total values from Stake and Bamboo apps, plus any new share counts from recent purchases.</div>
+      <div class="ur">
+        <div class="ul"><strong>Bamboo total (AUD)</strong><div style="font-size:11px;color:var(--text3)">Bamboo app → Portfolio → total value</div></div>
+        <input type="number" id="uu-cry" placeholder="2093.00" step="0.01" style="width:130px"/>
+      </div>
+      <div style="font-size:11px;color:var(--text3);padding:10px 0 6px">Share counts — update if you made new purchases:</div>
+      <div id="share-rows"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+        <button class="btn" onclick="closeModal('upd-m')">Cancel</button>
+        <button class="btn btnp" onclick="saveUpdate()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const HD=[
+  {id:'IVV.AX',n:'iShares S&P 500',s:44,c:2671.89,g:'ETF',r:'ADD',rc:'bg'},
+  {id:'NDQ.AX',n:'BetaShares Nasdaq 100',s:45,c:2239.22,g:'ETF',r:'ADD',rc:'bg'},
+  {id:'VAS.AX',n:'Vanguard Aus Shares',s:18,c:1917.31,g:'ETF',r:'HOLD',rc:'bb'},
+  {id:'IAA.AX',n:'iShares Asia 50',s:8,c:972.08,g:'ETF',r:'HOLD',rc:'bb'},
+  {id:'IEU.AX',n:'iShares Europe',s:5,c:486.59,g:'ETF',r:'HOLD',rc:'bz'},
+  {id:'VBND.AX',n:'Vanguard Global Bond',s:27,c:1139.79,g:'ETF',r:'SELL',rc:'br'},
+  {id:'MELI',n:'MercadoLibre',s:0.2148,c:452.00,g:'Stock',r:'ADD',rc:'bg'},
+  {id:'AAPL',n:'Apple',s:0.5519,c:112.00,g:'Stock',r:'HOLD',rc:'bb'},
+  {id:'NVDA',n:'Nvidia',s:0.1662,c:33.00,g:'Stock',r:'BUILD',rc:'ba'},
+  {id:'GPRO',n:'GoPro',s:15,c:9.65,g:'Stock',r:'SELL',rc:'br'},
+  {id:'SCHD',n:'Schwab Dividend',s:1.2486,c:36.95,g:'Stock',r:'SELL',rc:'br'},
+];
+const WL=[
+  {id:'GOOG',n:'Alphabet (Class C)',r:'BUY',rc:'bg',p:334.20,tgt:'< $310 AUD',note:'Best entry on list. AI + cloud + ads moat.'},
+  {id:'MELI',n:'MercadoLibre (add)',r:'ADD',rc:'bg',p:1879.78,tgt:'< $1,800 AUD',note:'Already own. Keep building on weakness.'},
+  {id:'MSFT',n:'Microsoft',r:'WATCH',rc:'ba',p:417.30,tgt:'< $390 AUD',note:'Azure + AI Copilot. Wait for dip.'},
+  {id:'MU',n:'Micron Technology',r:'WATCH',rc:'ba',p:447.77,tgt:'< $420 AUD',note:'AI memory (HBM) demand. Cyclical — be patient.'},
+  {id:'HOOD',n:'Robinhood Markets',r:'OPTIONAL',rc:'ba',p:89.40,tgt:'< $75 AUD',note:'Fintech/crypto play. $200 max — speculative.'},
+  {id:'TSLA',n:'Tesla',r:'SKIP',rc:'br',p:395.53,tgt:'—',note:'Brand damage + EV competition. Avoid.'},
+  {id:'GOOGL',n:'Alphabet (Class A)',r:'SKIP',rc:'bz',p:336.72,tgt:'—',note:'Same company as GOOG. Pick GOOG only.'},
+];
+let H=JSON.parse(JSON.stringify(HD));
+let px={IVV:65.22,'NDQ.AX':54.01,'VAS.AX':110.94,'IAA.AX':167.66,'IEU.AX':100.09,'VBND.AX':40.86,AAPL:267.97,MELI:1880.54,NVDA:197.95,GPRO:1.11,SCHD:30.68};
+let wp={GOOG:334.20,MELI:1879.78,MSFT:417.30,MU:447.77,HOOD:89.40,TSLA:395.53,GOOGL:336.72};
+let cryptoV=2092.73;
+let pxMap={'IVV.AX':'IVV','NDQ.AX':'NDQ.AX','VAS.AX':'VAS.AX','IAA.AX':'IAA.AX','IEU.AX':'IEU.AX','VBND.AX':'VBND.AX','MELI':'MELI','AAPL':'AAPL','NVDA':'NVDA','GPRO':'GPRO','SCHD':'SCHD'};
+let activeChart=null;
+const $=id=>document.getElementById(id);
+const f=n=>'$'+Math.abs(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=n=>(n>=0?'+':'−')+Math.abs(n).toFixed(1)+'%';
+const pc=n=>n>=0?'grn':'red';
+function getPx(h){return px[pxMap[h.id]]||px[h.id]||0;}
+function eq(h){return h.s*getPx(h);}
+function pl(h){return eq(h)-h.c;}
+function plp(h){return pl(h)/h.c*100;}
+function getKey(){return ($('apikey').value.trim())||localStorage.getItem('pd_k')||'';}
+function saveKey(){try{localStorage.setItem('pd_k',$('apikey').value.trim());}catch(e){}}
+function loadPersist(){
+  try{
+    const k=localStorage.getItem('pd_k');if(k)$('apikey').value=k;
+    const hd=localStorage.getItem('pd_h');if(hd)H=JSON.parse(hd);
+    const cv=localStorage.getItem('pd_cv');if(cv)cryptoV=parseFloat(cv);
+    const p=localStorage.getItem('pd_px');if(p)px=JSON.parse(p);
+    const w=localStorage.getItem('pd_wp');if(w)wp=JSON.parse(w);
+  }catch(e){}
+}
+function persist(){try{localStorage.setItem('pd_h',JSON.stringify(H));localStorage.setItem('pd_cv',cryptoV);localStorage.setItem('pd_px',JSON.stringify(px));localStorage.setItem('pd_wp',JSON.stringify(wp));}catch(e){}}
+function toggleKey(el){const i=$('apikey');const s=i.type==='password';i.type=s?'text':'password';el.textContent=s?'hide':'show';}
+function setTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  $('t-'+name).classList.add('active');
+}
+function closeModal(id){
+  $(id).classList.remove('open');
+  if(id==='chart-m'&&activeChart){activeChart.destroy();activeChart=null;}
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-ov.open').forEach(m=>{m.classList.remove('open');if(activeChart){activeChart.destroy();activeChart=null;}});});
+
+function renderSummary(){
+  const tot=H.reduce((s,h)=>s+eq(h),0);
+  const tpl=H.reduce((s,h)=>s+pl(h),0);
+  const tco=H.reduce((s,h)=>s+h.c,0);
+  $('s-tot').textContent=f(tot+cryptoV);
+  $('s-stk').textContent=f(tot);
+  $('s-pl').innerHTML='<span class="'+pc(tpl)+'">'+( tpl>=0?'+':'−')+f(Math.abs(tpl))+' ('+pct(tpl/tco*100)+')</span>';
+  $('s-cry').textContent=f(cryptoV);
+  $('cry-tot').textContent=f(cryptoV)+' AUD';
+}
+function row(h){
+  const e=eq(h),p=pl(h),pp=plp(h);
+  return`<tr onclick="showChart('${h.id}','${h.n}')">
+  <td><div style="font-weight:500">${h.id.replace('.AX','')}</div><div class="tsub">${h.n}</div></td>
+  <td><span class="badge ${h.rc}">${h.r}</span></td>
+  <td class="r" style="font-size:12px;color:var(--text2)">${h.s<1?h.s.toFixed(4):h.s}</td>
+  <td class="r">${f(getPx(h))}</td>
+  <td class="r" style="font-weight:500">${f(e)}</td>
+  <td class="r"><span class="${pc(p)}">${p>=0?'+':'−'}${f(Math.abs(p))}</span><br><span class="${pc(p)}" style="font-size:11px">${pct(pp)}</span></td>
+  </tr>`;
+}
+function renderTables(){
+  $('etf-b').innerHTML=H.filter(h=>h.g==='ETF').map(row).join('');
+  $('stk-b').innerHTML=H.filter(h=>h.g==='Stock').map(row).join('');
+  $('wl-b').innerHTML=WL.map(w=>`<tr onclick="showChart('${w.id}','${w.n}')">
+  <td><div style="font-weight:500">${w.id}</div><div class="tsub">${w.n}</div></td>
+  <td><span class="badge ${w.rc}">${w.r}</span></td>
+  <td class="r" style="font-weight:500">${f(wp[w.id]||w.p)}</td>
+  <td class="r" style="color:var(--grn);font-size:12px">${w.tgt}</td>
+  <td style="font-size:12px;color:var(--text2);line-height:1.45;max-width:180px">${w.note}</td>
+  </tr>`).join('');
+}
+function renderDiv(){
+  const tot=H.reduce((s,h)=>s+eq(h),0);
+  const core=(eq(H[0])+eq(H[1]))/tot*100;
+  const grwth=H.filter(h=>h.g==='Stock'&&h.r!=='SELL').reduce((s,h)=>s+eq(h),0)/tot*100;
+  const bonds=(eq(H[5])+H.filter(h=>h.id==='SCHD')[0]?eq(H.find(h=>h.id==='SCHD')):0)/tot*100;
+  const regional=(eq(H[2])+eq(H[3])+eq(H[4]))/tot*100;
+  const bondVal=(H.find(h=>h.id==='VBND.AX')?eq(H.find(h=>h.id==='VBND.AX')):0)+(H.find(h=>h.id==='SCHD')?eq(H.find(h=>h.id==='SCHD')):0);
+  const bondPct=bondVal/tot*100;
+  const grps=[
+    {l:'Core ETFs (IVV + NDQ)',a:core,t:70,c:'#378ADD'},
+    {l:'Growth stocks',a:grwth,t:25,c:'#1D9E75'},
+    {l:'Regional ETFs (VAS+IAA+IEU)',a:regional,t:5,c:'#7F77DD'},
+    {l:'Bonds & dividends',a:bondPct,t:0,c:'#E24B4A'},
+  ];
+  $('alloc-tbl').innerHTML=grps.map(g=>`<div class="ar">
+    <div class="al">${g.l}</div>
+    <div class="ab">
+      <div class="abr"><div style="font-size:10px;color:var(--text3);width:42px">Actual</div><div class="bw"><div class="bf" style="width:${Math.min(g.a,100).toFixed(0)}%;background:${g.c}"></div></div><div class="blab">${g.a.toFixed(1)}%</div></div>
+      <div class="abr"><div style="font-size:10px;color:var(--text3);width:42px">Target</div><div class="bw"><div class="bf" style="width:${g.t}%;background:${g.c};opacity:0.3"></div></div><div class="blab" style="color:var(--text3)">${g.t}%</div></div>
+    </div>
+    <span class="badge ${g.a>=g.t*0.85?'bg':'br'}">${g.a>=g.t*0.85?'On track':'Under'}</span>
+  </div>`).join('');
+  if(window.dChart)window.dChart.destroy();
+  window.dChart=new Chart($('dc'),{type:'bar',data:{labels:grps.map(g=>g.l),datasets:[{label:'Actual %',data:grps.map(g=>parseFloat(g.a.toFixed(1))),backgroundColor:grps.map(g=>g.c),borderRadius:4},{label:'Target %',data:grps.map(g=>g.t),backgroundColor:grps.map(g=>g.c+'44'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.parsed.y.toFixed(1)+'%'}}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#888780'}},y:{max:80,grid:{color:'rgba(136,135,128,0.12)'},ticks:{callback:v=>v+'%',color:'#888780',font:{size:11}}}}}});
+  $('div-recs').innerHTML=`<div class="card cp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div><div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--red)">Exit these positions</div><div style="font-size:12px;color:var(--text2);line-height:1.8">
+    • VBND.AX (~$1,103) — bonds drag growth for 15yr horizon<br>• GPRO — small, speculative, no moat<br>• SCHD — dividend focus, misaligned with your goals<br>• Stop adding to IEU — Europe has underperformed US for a decade
+    </div></div>
+    <div><div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--grn)">Redeploy freed capital (~$1,200)</div><div style="font-size:12px;color:var(--text2);line-height:1.8">
+    • $400–500 → GOOG (initiate position on dip)<br>• $300 → MELI (add to existing holding)<br>• $200 → NVDA (build from micro to meaningful)<br>• Remainder → IVV or NDQ monthly contribution
+    </div></div>
+  </div></div>`;
+  $('sector-b').innerHTML=[
+    {s:'US Technology (direct stocks)',a:'~4%',t:'20–25%',st:'br',l:'Under by ~18%'},
+    {s:'US Broad Market (via IVV+NDQ ETFs)',a:'~48%',t:'40–45%',st:'bg',l:'On track'},
+    {s:'LATAM / Emerging Markets (MELI)',a:'~3.7%',t:'5–8%',st:'ba',l:'Slightly under'},
+    {s:'Australia (VAS)',a:'~18%',t:'10–12%',st:'ba',l:'Slightly over — hold, don\'t add'},
+    {s:'Bonds & fixed income (VBND)',a:'~10%',t:'0%',st:'br',l:'Exit — no bonds for 15yr horizon'},
+    {s:'Crypto (Bamboo)',a:'~16%',t:'10–20%',st:'bg',l:'Within range — keep DCA'},
+  ].map(r=>`<tr><td>${r.s}</td><td class="r">${r.a}</td><td class="r">${r.t}</td><td><span class="badge ${r.st}">${r.l}</span></td></tr>`).join('');
+}
+function renderPlan(){
+  const plan=[
+    {m:'April 2026 — clean up',b:'~$500 ETFs + $150 stocks + $433 crypto',items:[
+      {c:'#E24B4A',t:'Sell GPRO (15 shares) — lock in the win',a:'Frees ~$145'},
+      {c:'#E24B4A',t:'Sell SCHD (1.25 shares) — close dividend position',a:'Frees ~$46'},
+      {c:'#888780',t:'Stop adding to VBND — begin exit plan in May',a:'No new buys'},
+      {c:'#1D9E75',t:'Monthly ETF buy: IVV.AX',a:'$400'},
+      {c:'#BA7517',t:'Watch GOOG — initiate only if it drops below $310',a:'$150 if triggered'},
+      {c:'#1D9E75',t:'Keep Bamboo $100/wk DCA — do not touch',a:'$433/month'},
+    ]},
+    {m:'May 2026 — build growth layer',b:'~$500 ETFs + $150–200 stocks + $433 crypto',items:[
+      {c:'#1D9E75',t:'Monthly ETF buy: NDQ.AX (alternate months)',a:'$400'},
+      {c:'#1D9E75',t:'Initiate GOOG if not done in April',a:'$300–400'},
+      {c:'#1D9E75',t:'Add to MELI if price is below $1,800 AUD',a:'$200'},
+      {c:'#E24B4A',t:'Sell ~12 shares VBND — start the exit',a:'~$490 freed'},
+      {c:'#BA7517',t:'Build NVDA — add to bring position to $250+',a:'$150'},
+      {c:'#888780',t:'Watch MSFT — only buy if drops below $390',a:'$300 if triggered'},
+    ]},
+    {m:'June 2026 — complete restructure',b:'~$500 ETFs + $150–200 stocks + $433 crypto',items:[
+      {c:'#1D9E75',t:'Monthly ETF buy: IVV.AX',a:'$400'},
+      {c:'#E24B4A',t:'Complete VBND exit — sell remaining 15 shares',a:'~$612 freed'},
+      {c:'#1D9E75',t:'Redeploy VBND cash into GOOG or top performer',a:'$400–500'},
+      {c:'#1D9E75',t:'Add to strongest stock position (review first)',a:'$200'},
+      {c:'#888780',t:'Optional: HOOD small speculative entry',a:'$150 max'},
+      {c:'#888780',t:'Q2 review: check stock % is trending toward 15%',a:'Target: 12–15%'},
+    ]},
+  ];
+  $('plan-out').innerHTML=plan.map(p=>`<div class="pc">
+    <div class="pm">${p.m}</div>
+    <div class="pamt">${p.b}</div>
+    ${p.items.map(i=>`<div class="pi"><div class="pd" style="background:${i.c}"></div><div><div>${i.t}</div><div class="pamount">${i.a}</div></div></div>`).join('')}
+  </div>`).join('');
+  $('entry-b').innerHTML=[
+    {t:'GOOG',cur:f(wp['GOOG']||334),buy:'< $310 AUD',max:'$500',trigger:'Any macro dip or tariff news'},
+    {t:'MELI',cur:f(wp['MELI']||1880),buy:'< $1,800 AUD',max:'$600 total',trigger:'EM selloff or earnings miss'},
+    {t:'MSFT',cur:f(wp['MSFT']||417),buy:'< $390 AUD',max:'$500',trigger:'Rate fears or tech rotation'},
+    {t:'NVDA',cur:f(wp['NVDA']||198),buy:'Any 10%+ dip',max:'$400 total',trigger:'AI capex slowdown fears'},
+    {t:'MU',cur:f(wp['MU']||448),buy:'< $400 AUD',max:'$300',trigger:'Memory oversupply news cycle'},
+    {t:'HOOD',cur:f(wp['HOOD']||89),buy:'< $75 AUD',max:'$200 max',trigger:'Risk-off / crypto winter'},
+  ].map(r=>`<tr><td style="font-weight:500">${r.t}</td><td class="r">${r.cur}</td><td class="r" style="color:var(--grn);font-weight:500">${r.buy}</td><td class="r">${r.max}</td><td style="font-size:12px;color:var(--text2)">${r.trigger}</td></tr>`).join('');
+}
+function renderAll(){renderSummary();renderTables();renderDiv();renderPlan();}
+
+async function go(){
+  const key=getKey();
+  if(!key){alert('Paste your Anthropic API key first.\nGet one free at: console.anthropic.com → API Keys');return;}
+  const btn=$('rbtn');
+  btn.disabled=true;btn.textContent='Fetching...';
+  $('lu').textContent='Fetching live prices via web search...';
+  try{
+    const prompt=`Search the web for today's current market prices. Return ONLY a valid JSON object, no markdown.\nASX ETFs: AUD price. US stocks: convert USD to AUD using today's AUD/USD rate.\n{"IVV":0,"NDQ":0,"VAS":0,"IAA":0,"IEU":0,"VBND":0,"AAPL":0,"MELI":0,"NVDA":0,"GPRO":0,"SCHD":0,"GOOG":0,"MSFT":0,"MU":0,"TSLA":0,"HOOD":0,"GOOGL":0}`;
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:prompt}]})});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const d=await resp.json();
+    const txt=d.content.filter(c=>c.type==='text').map(c=>c.text).join('');
+    const m=txt.match(/\{[\s\S]*?\}/);
+    if(!m)throw new Error('No price data in response');
+    const np=JSON.parse(m[0]);
+    const keyMap={IVV:'IVV',NDQ:'NDQ.AX',VAS:'VAS.AX',IAA:'IAA.AX',IEU:'IEU.AX',VBND:'VBND.AX',AAPL:'AAPL',MELI:'MELI',NVDA:'NVDA',GPRO:'GPRO',SCHD:'SCHD'};
+    Object.entries(keyMap).forEach(([k,v])=>{if(np[k]>0)px[v]=np[k];});
+    ['GOOG','MSFT','MU','TSLA','HOOD','GOOGL'].forEach(k=>{if(np[k]>0)wp[k]=np[k];});
+    if(np['MELI']>0)wp['MELI']=np['MELI'];
+    persist();
+    $('lu').textContent='Live prices · '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'})+' · '+new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+    renderAll();
+  }catch(e){$('lu').textContent='Error: '+e.message;}
+  btn.disabled=false;btn.textContent='↻ Refresh prices';
+}
+
+async function loadNews(){
+  const key=getKey();
+  if(!key){alert('API key required to load news.');return;}
+  const btn=$('news-btn');
+  btn.disabled=true;btn.textContent='Loading...';
+  $('news-status').style.display='block';
+  $('news-out').innerHTML='';
+  const tickers=H.map(h=>h.id.replace('.AX','')).concat(WL.filter(w=>!['SKIP'].includes(w.r)).map(w=>w.id)).join(', ');
+  try{
+    const prompt=`Search the web for news published in the last 7 days about these stocks and ETFs: ${tickers}.\n\nReturn ONLY a valid JSON object mapping ticker to news array:\n{"TICKER":[{"title":"headline","sentiment":"positive|negative|neutral","summary":"1-sentence summary","date":"Apr 17"}]}\nInclude 2-3 items per ticker. Cover all of: IVV, NDQ, VAS, IAA, IEU, VBND, MELI, AAPL, NVDA, GPRO, SCHD, GOOG, MSFT, MU, HOOD.\nReturn ONLY the JSON, nothing else.`;
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3500,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:prompt}]})});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const d=await resp.json();
+    const txt=d.content.filter(c=>c.type==='text').map(c=>c.text).join('');
+    const m=txt.match(/\{[\s\S]*\}/);
+    if(!m)throw new Error('Could not parse news');
+    const news=JSON.parse(m[0]);
+    $('news-status').style.display='none';
+    const all=[...H.map(h=>({id:h.id.replace('.AX',''),n:h.n,r:h.r,rc:h.rc})),...WL.filter(w=>w.r!=='SKIP').map(w=>({id:w.id,n:w.n,r:w.r,rc:w.rc}))];
+    $('news-out').innerHTML='<div class="ng">'+all.map(t=>{
+      const items=news[t.id]||[];
+      if(!items.length)return'';
+      return`<div class="nc">
+        <div class="nch">${t.id} · ${t.n} &nbsp;<span class="badge ${t.rc}">${t.r}</span></div>
+        ${items.map(i=>`<div class="ni">
+          <div class="ntitle">${i.title}</div>
+          <div class="nmeta">${i.date||''} <span class="ns ns${(i.sentiment||'z')[0]}">${i.sentiment||'neutral'}</span></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:3px;line-height:1.4">${i.summary||''}</div>
+        </div>`).join('')}
+      </div>`;
+    }).filter(Boolean).join('')+'</div>';
+  }catch(e){
+    $('news-status').style.display='none';
+    $('news-out').innerHTML=`<div style="text-align:center;padding:30px;color:var(--red)">Error: ${e.message}</div>`;
+  }
+  btn.disabled=false;btn.textContent='Refresh news';
+}
+
+async function showChart(ticker,name){
+  const key=getKey();
+  const disp=ticker.replace('.AX','');
+  $('cm-title').textContent=disp+' — 12-month price history';
+  $('chart-m').classList.add('open');
+  $('cm-wrap').style.display='none';
+  $('cm-info').textContent='';
+  if(!key){$('cm-status').innerHTML='<div style="color:var(--amb);font-size:13px">Add your API key to load price charts.</div>';return;}
+  $('cm-status').innerHTML='<span class="spin" style="display:block;margin:0 auto 8px"></span><div style="font-size:12px;color:var(--text3)">Searching for 12-month price data...</div>';
+  try{
+    const prompt=`Search the web for ${disp} (${name}) monthly closing stock price data for the last 12 months (approximately April 2025 to April 2026). If ASX ETF provide AUD prices, if US stock convert to AUD using historical rates.\nReturn ONLY this JSON structure:\n{"ticker":"${disp}","data":[{"month":"2025-04","price":0},...12 entries ending 2026-04],"note":"one line of context"}\nNo other text.`;
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:prompt}]})});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const d=await resp.json();
+    const txt=d.content.filter(c=>c.type==='text').map(c=>c.text).join('');
+    const m=txt.match(/\{[\s\S]*\}/);
+    if(!m)throw new Error('No chart data returned');
+    const cd=JSON.parse(m[0]);
+    if(!cd.data||!cd.data.length)throw new Error('Empty data');
+    const labels=cd.data.map(p=>{const[y,mo]=p.month.split('-');return new Date(parseInt(y),parseInt(mo)-1).toLocaleDateString('en-AU',{month:'short',year:'2-digit'});});
+    const vals=cd.data.map(p=>parseFloat((+p.price).toFixed(2)));
+    const first=vals[0],last=vals[vals.length-1];
+    const chg=((last-first)/first*100).toFixed(1);
+    const up=last>=first;
+    const col=up?'#1D9E75':'#E24B4A';
+    $('cm-status').textContent='';
+    $('cm-wrap').style.display='block';
+    if(activeChart)activeChart.destroy();
+    activeChart=new Chart($('pc'),{type:'line',data:{labels,datasets:[{data:vals,borderColor:col,borderWidth:2.5,pointRadius:4,pointBackgroundColor:col,tension:0.3,fill:true,backgroundColor:col+'18'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+f(c.parsed.y)+' AUD'}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#888780'}},y:{grid:{color:'rgba(136,135,128,0.12)'},ticks:{font:{size:10},color:'#888780',callback:v=>'$'+v}}}}});
+    $('cm-info').innerHTML=`<div style="display:flex;gap:20px;flex-wrap:wrap">
+      <div><span style="color:var(--text2)">12M change</span> <strong class="${up?'grn':'red'}">${up?'+':''}${chg}%</strong></div>
+      <div><span style="color:var(--text2)">12M low</span> <strong>${f(Math.min(...vals))}</strong></div>
+      <div><span style="color:var(--text2)">12M high</span> <strong>${f(Math.max(...vals))}</strong></div>
+      <div><span style="color:var(--text2)">Current</span> <strong>${f(last)}</strong></div>
+    </div>${cd.note?`<div style="margin-top:8px;font-size:11px;color:var(--text3)">${cd.note}</div>`:''}`;
+  }catch(e){
+    $('cm-status').innerHTML=`<div style="color:var(--red);font-size:12px">Could not load chart: ${e.message}</div>`;
+    $('cm-wrap').style.display='none';
+  }
+}
+
+function showUpdate(){
+  $('uu-cry').value=cryptoV.toFixed(2);
+  $('share-rows').innerHTML=H.map(h=>`<div class="ur">
+    <div class="ul"><strong>${h.id.replace('.AX','')}</strong> — ${h.n}<div style="font-size:11px;color:var(--text3)">Current: ${h.s<1?h.s.toFixed(4):h.s} shares</div></div>
+    <input type="number" id="uu-${h.id.replace(/\./g,'_')}" value="${h.s<1?h.s.toFixed(4):h.s}" step="${h.s<1?'0.0001':'0.0001'}" min="0" style="width:120px"/>
+  </div>`).join('');
+  $('upd-m').classList.add('open');
+}
+function saveUpdate(){
+  const cv=parseFloat($('uu-cry').value);
+  if(!isNaN(cv)&&cv>=0)cryptoV=cv;
+  H.forEach(h=>{
+    const el=$('uu-'+h.id.replace(/\./g,'_'));
+    if(el){const v=parseFloat(el.value);if(!isNaN(v)&&v>=0)h.s=v;}
+  });
+  persist();
+  closeModal('upd-m');
+  renderAll();
+  $('lu').textContent='Portfolio updated manually · '+new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'2-digit'});
+}
+
+loadPersist();
+renderAll();
+</script>
+</body>
+</html>
