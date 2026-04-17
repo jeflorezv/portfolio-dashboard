@@ -109,6 +109,7 @@ input:focus{outline:none;border-color:var(--blu);}
       <span class="kl">API key</span>
       <input type="password" id="apikey" placeholder="sk-ant-..." style="width:195px;" oninput="saveKey()"/>
       <span style="font-size:11px;color:var(--text3);cursor:pointer;" onclick="toggleKey(this)">show</span>
+      <span id="key-status" style="font-size:11px;color:var(--text3)">No key</span>
     </div>
     <button class="btn" onclick="showUpdate()">↑ Weekly update</button>
     <button class="btn" onclick="go()" id="rbtn">↻ Refresh prices</button>
@@ -278,8 +279,31 @@ function getPx(h){return px[pxMap[h.id]]||px[h.id]||0;}
 function eq(h){return h.s*getPx(h);}
 function pl(h){return eq(h)-h.c;}
 function plp(h){return pl(h)/h.c*100;}
-function getKey(){return ($('apikey').value.trim())||localStorage.getItem('pd_k')||'';}
-function saveKey(){try{localStorage.setItem('pd_k',$('apikey').value.trim());}catch(e){}}
+function getKey(){
+  const fromInput=($('apikey').value||'').trim();
+  const fromStore=localStorage.getItem('pd_k')||'';
+  return fromInput||fromStore;
+}
+function saveKey(){
+  const k=($('apikey').value||'').trim();
+  if(k){try{localStorage.setItem('pd_k',k);}catch(e){}}
+  updateKeyStatus();
+}
+function updateKeyStatus(){
+  const k=getKey();
+  const el=$('key-status');
+  if(!el)return;
+  if(!k){el.textContent='No key';el.style.color='var(--red)';}
+  else if(!k.startsWith('sk-ant-')){el.textContent='Key format looks wrong';el.style.color='var(--amb)';}
+  else{el.textContent='Key saved ✓';el.style.color='var(--grn)';}
+}
+function apiErr(status){
+  if(status===401)return'API key missing or invalid. Make sure you paste it in the field at the top (starts with sk-ant-) and it appears as "Key saved ✓".';
+  if(status===403)return'API key does not have permission. Check your key at console.anthropic.com.';
+  if(status===429)return'Rate limit hit. Wait 30 seconds and try again.';
+  if(status===500)return'Anthropic server error. Try again in a minute.';
+  return'HTTP error '+status+'. Check your key and try again.';
+}
 function loadPersist(){
   try{
     const k=localStorage.getItem('pd_k');if(k)$('apikey').value=k;
@@ -441,7 +465,10 @@ async function go(){
     persist();
     $('lu').textContent='Live prices · '+new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'})+' · '+new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
     renderAll();
-  }catch(e){$('lu').textContent='Error: '+e.message;}
+  }catch(e){
+    const msg=e.message.startsWith('HTTP ')?apiErr(parseInt(e.message.split(' ')[1])):e.message;
+    $('lu').textContent='Error: '+msg;
+  }
   btn.disabled=false;btn.textContent='↻ Refresh prices';
 }
 
@@ -449,6 +476,14 @@ async function loadNews(){
   const key=getKey();
   if(!key){alert('API key required to load news.');return;}
   const btn=$('news-btn');
+  if(!key){
+    $('news-out').innerHTML='<div style="padding:20px;color:var(--red);font-size:13px">API key required. Paste your key (starting with sk-ant-) into the field at the top of the page, then try again.<br><br>Get a key free at: <strong>console.anthropic.com</strong> → API Keys</div>';
+    return;
+  }
+  if(!key.startsWith('sk-ant-')){
+    $('news-out').innerHTML='<div style="padding:20px;color:var(--amb);font-size:13px">Your API key doesn\'t look right — it should start with <strong>sk-ant-</strong>. Double-check you copied the full key from console.anthropic.com.</div>';
+    return;
+  }
   btn.disabled=true;btn.textContent='Loading...';
   $('news-status').style.display='block';
   $('news-out').innerHTML='';
@@ -478,7 +513,8 @@ async function loadNews(){
     }).filter(Boolean).join('')+'</div>';
   }catch(e){
     $('news-status').style.display='none';
-    $('news-out').innerHTML=`<div style="text-align:center;padding:30px;color:var(--red)">Error: ${e.message}</div>`;
+    const msg=e.message.startsWith('HTTP ')?apiErr(parseInt(e.message.split(' ')[1])):e.message;
+    $('news-out').innerHTML='<div style="padding:20px;color:var(--red);font-size:13px">'+msg+'</div>';
   }
   btn.disabled=false;btn.textContent='Refresh news';
 }
@@ -519,7 +555,8 @@ async function showChart(ticker,name){
       <div><span style="color:var(--text2)">Current</span> <strong>${f(last)}</strong></div>
     </div>${cd.note?`<div style="margin-top:8px;font-size:11px;color:var(--text3)">${cd.note}</div>`:''}`;
   }catch(e){
-    $('cm-status').innerHTML=`<div style="color:var(--red);font-size:12px">Could not load chart: ${e.message}</div>`;
+    const msg=e.message.startsWith('HTTP ')?apiErr(parseInt(e.message.split(' ')[1])):e.message;
+    $('cm-status').innerHTML='<div style="color:var(--red);font-size:12px">'+msg+'</div>';
     $('cm-wrap').style.display='none';
   }
 }
@@ -546,6 +583,7 @@ function saveUpdate(){
 }
 
 loadPersist();
+updateKeyStatus();
 renderAll();
 </script>
 </body>
