@@ -112,6 +112,7 @@ input:focus{outline:none;border-color:var(--blu);}
       <span id="key-status" style="font-size:11px;color:var(--text3)">No key</span>
     </div>
     <button class="btn" onclick="showUpdate()">↑ Weekly update</button>
+    <button class="btn" onclick="testKey()" id="tbtn">⚡ Test key</button>
     <button class="btn" onclick="go()" id="rbtn">↻ Refresh prices</button>
   </div>
 </div>
@@ -294,11 +295,11 @@ function updateKeyStatus(){
   const el=$('key-status');
   if(!el)return;
   if(!k){el.textContent='No key';el.style.color='var(--red)';}
-  else if(!k.startsWith('sk-ant-')){el.textContent='Key format looks wrong';el.style.color='var(--amb)';}
+  else if(!k.startsWith('sk-ant-')){el.textContent='Key format looks wrong — should start with sk-ant-';el.style.color='var(--amb)';}
   else{el.textContent='Key saved ✓';el.style.color='var(--grn)';}
 }
 function apiErr(status){
-  if(status===401)return'API key missing or invalid. Make sure you paste it in the field at the top (starts with sk-ant-) and it appears as "Key saved ✓".';
+  if(status===401)return'401 — API key rejected. Most common cause: no billing set up. Go to console.anthropic.com → Settings → Billing → add a credit card and purchase credits ($5 minimum). The key exists but cannot make requests without an active billing method.';
   if(status===403)return'API key does not have permission. Check your key at console.anthropic.com.';
   if(status===429)return'Rate limit hit. Wait 30 seconds and try again.';
   if(status===500)return'Anthropic server error. Try again in a minute.';
@@ -480,10 +481,7 @@ async function loadNews(){
     $('news-out').innerHTML='<div style="padding:20px;color:var(--red);font-size:13px">API key required. Paste your key (starting with sk-ant-) into the field at the top of the page, then try again.<br><br>Get a key free at: <strong>console.anthropic.com</strong> → API Keys</div>';
     return;
   }
-  if(!key.startsWith('sk-ant-')){
-    $('news-out').innerHTML='<div style="padding:20px;color:var(--amb);font-size:13px">Your API key doesn\'t look right — it should start with <strong>sk-ant-</strong>. Double-check you copied the full key from console.anthropic.com.</div>';
-    return;
-  }
+
   btn.disabled=true;btn.textContent='Loading...';
   $('news-status').style.display='block';
   $('news-out').innerHTML='';
@@ -580,6 +578,54 @@ function saveUpdate(){
   closeModal('upd-m');
   renderAll();
   $('lu').textContent='Portfolio updated manually · '+new Date().toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'2-digit'});
+}
+
+async function testKey(){
+  const key=getKey();
+  if(!key){alert('No API key found. Paste your key in the field at the top first.');return;}
+  const btn=$('tbtn');
+  btn.disabled=true;btn.textContent='Testing...';
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:20,messages:[{role:'user',content:'Reply with the word OK only.'}]})
+    });
+    const d=await resp.json();
+    if(!resp.ok){
+      const detail=d.error?.message||JSON.stringify(d);
+      if(resp.status===401){
+        alert('401 — Key rejected by Anthropic.
+
+Your key: '+key.substring(0,20)+'...
+
+Most likely fix:
+1. Go to console.anthropic.com
+2. Click Settings → Billing
+3. Add a credit card
+4. Purchase credits ($5 minimum)
+
+Error detail: '+detail);
+      } else {
+        alert('Error '+resp.status+':
+'+detail);
+      }
+    } else {
+      const reply=d.content?.[0]?.text||'(no text)';
+      alert('✓ API key is working!
+
+Response: '+reply+'
+
+You can now use Refresh prices, Load news, and charts.');
+    }
+  }catch(e){
+    alert('Network error: '+e.message+'
+
+If running from a local file, try using a local server instead:
+In Terminal: cd ~/Downloads && python3 -m http.server 8080
+Then open: http://localhost:8080/portfolio-dashboard-v2.html');
+  }
+  btn.disabled=false;btn.textContent='⚡ Test key';
 }
 
 loadPersist();
